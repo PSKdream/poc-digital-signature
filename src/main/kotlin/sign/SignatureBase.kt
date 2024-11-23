@@ -15,6 +15,7 @@ import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder
 import java.io.InputStream
+import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.cert.Certificate
 import java.security.cert.X509Certificate
@@ -26,6 +27,13 @@ abstract class SignatureBase(
     lateinit var privateKey: PrivateKey
     lateinit var certificateChain: Array<Certificate>
     private var tsaUrl: String? = null
+
+    data class SignatureConfig(
+        val keystore: KeyStore,
+        val keystorePassword: String,
+        val keyAlias: String,
+    )
+
 
     init {
         privateKey = config.keystore.getKey(config.keyAlias, config.keystorePassword.toCharArray()) as PrivateKey
@@ -68,7 +76,7 @@ abstract class SignatureBase(
             (base is COSDictionary).let {
                 val sigRefDict = base as COSDictionary
                 if (sigRefDict.getDictionaryObject(COSName.TRANSFORM_METHOD) == COSName.DOCMDP) {
-                   val transformDict = sigRefDict.getDictionaryObject(COSName.TRANSFORM_PARAMS)
+                    val transformDict = sigRefDict.getDictionaryObject(COSName.TRANSFORM_PARAMS)
                     if (transformDict is COSDictionary) {
                         var accessPermissions = transformDict.getInt(COSName.P, 2)
                         if (accessPermissions < 1 || accessPermissions > 3) accessPermissions = 2
@@ -81,7 +89,7 @@ abstract class SignatureBase(
         return 0
     }
 
-    fun setMDPPermission(doc: PDDocument, signature: PDSignature, accessPermissions: Int){
+    fun setMDPPermission(doc: PDDocument, signature: PDSignature, accessPermissions: Int) {
         val sigDict = signature.cosObject
         // DocMDP specific stuff
         val transformParameters = COSDictionary().apply {
@@ -100,7 +108,7 @@ abstract class SignatureBase(
         }
 
 
-        val referenceArray =  COSArray().apply {
+        val referenceArray = COSArray().apply {
             add(referenceDict)
             setNeedToBeUpdated(true)
 
@@ -109,7 +117,7 @@ abstract class SignatureBase(
         sigDict.setItem(COSName.REFERENCE, referenceArray)
 
         // Catalog
-        val permsDict =  COSDictionary().apply {
+        val permsDict = COSDictionary().apply {
             setItem(COSName.TYPE, COSName.PERMS)
             setNeedToBeUpdated(true)
         }

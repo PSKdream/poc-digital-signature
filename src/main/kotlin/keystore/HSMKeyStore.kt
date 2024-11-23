@@ -1,0 +1,4 @@
+package keystore
+
+class HSMKeyStore {
+}
