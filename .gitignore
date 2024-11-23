@@ -39,3 +39,4 @@ build/
 
 ### Keystore files ###
 *.p12
+*.jks

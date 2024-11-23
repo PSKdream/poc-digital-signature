@@ -1,4 +1,7 @@
-package io.pongsakorn.sign
+package io.pongsakorn.keystore
 
-interface ExternalKeystore {
+interface ExternalKeystoreInterface {
+    fun loadCert(keyAlias: String): ByteArray
+
+    fun sign(data: ByteArray, keyAlias: String): ByteArray
 }

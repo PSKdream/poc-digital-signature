@@ -4,7 +4,6 @@ import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions
 import sign.SignatureBase
-import sign.SignatureConfig
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -40,10 +39,12 @@ fun main(){
 
 
     // Configuration
-    val config = SignatureConfig(
+    val config = SignatureBase.SignatureConfig(
         keystore = KeyStore.getInstance("PKCS12").apply {
-            load(FileInputStream("./keystore.p12"),
-                "dream123".toCharArray())
+            load(
+                FileInputStream("./keystore.p12"),
+                "dream123".toCharArray()
+            )
         },
         keystorePassword = "dream123",
         keyAlias = "pdf_signer"

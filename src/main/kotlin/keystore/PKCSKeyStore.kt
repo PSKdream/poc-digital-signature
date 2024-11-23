@@ -6,9 +6,9 @@ import java.security.Signature
 import java.util.HashMap
 
 
-class TestExternalStore(val config: SignatureConfig) : ExternalKeystoreInterface {
+class PKCSKeyStore(val config: KeystoreConfig) : ExternalKeystoreInterface {
 
-    data class SignatureConfig(
+    data class KeystoreConfig(
         val keystore: KeyStore,
         val keystorePassword: String,
     )
