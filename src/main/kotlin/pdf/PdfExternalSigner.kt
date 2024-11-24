@@ -8,23 +8,20 @@ import pdf.facade.setMDPPermission
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature
-import pdf.facade.PdfToA3Converter
 import java.security.KeyStore
 import java.util.*
 import java.io.*
 
 
-class PdfA3Signer(externalKeystore: ExternalKeystoreInterface, keyAlias: String, certAliasChain: Array<String>) :
+class PdfExternalSigner(externalKeystore: ExternalKeystoreInterface, keyAlias: String, certAliasChain: Array<String>) :
     ExternalSignaturePdfBase(externalKeystore, keyAlias, certAliasChain) {
 
-    fun signPdf(document: PDDocument, xmlContent: String, docClose: Boolean = false): ByteArray {
+    fun signPdf(document: PDDocument, docClose: Boolean = false): ByteArray {
 
         // Check PDF permissions
         val accessPermissions = getMDPPermission(document)
         validatePermissions(accessPermissions)
 
-        // Convert document to PDF/A-3 and attach XML metadata
-        convertToPdfA3(document, xmlContent)
 
         val signature = PDSignature().apply {
             setFilter(PDSignature.FILTER_ADOBE_PPKLITE)
@@ -71,12 +68,6 @@ class PdfA3Signer(externalKeystore: ExternalKeystoreInterface, keyAlias: String,
             throw IllegalStateException("No changes to the document are permitted due to DocMDP transform parameters dictionary")
         }
     }
-
-    private fun convertToPdfA3(document: PDDocument, xmlContent: String) {
-        val xmlBytes = xmlContent.toByteArray()
-        PdfToA3Converter().convertToPdfA3(document, xmlBytes, "attachment.xml")
-    }
-
 }
 
 
@@ -95,26 +86,16 @@ fun main() {
             keystorePassword = "password",
         )
     )
-    val signer = PdfA3Signer(
+    val signer = PdfExternalSigner(
         keystore,
         "intermediateca",
         arrayOf("intermediateca", "rootca")
     )
 
-    val xmlContent = """
-        <?xml version="1.0" encoding="UTF-8"?>
-        <root>
-            <data>
-                <name>Attachment</name>
-                <value>Attachment content</value>
-            </data>
-        </root>
-    """.trimIndent()
-
     // Create and sign document
     val document = Loader.loadPDF(File("document.pdf"))
 
-    val documentWithSigning = signer.signPdf(document, xmlContent, true)
+    val documentWithSigning = signer.signPdf(document, true)
 
     File("signed_document_A3_external.pdf").outputStream().use {
         it.write(documentWithSigning)

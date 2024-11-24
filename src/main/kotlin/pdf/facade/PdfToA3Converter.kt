@@ -1,4 +1,4 @@
-package pdf
+package pdf.facade
 
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.cos.COSArray
