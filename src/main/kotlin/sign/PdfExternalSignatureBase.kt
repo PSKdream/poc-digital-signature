@@ -29,7 +29,7 @@ import java.security.MessageDigest
 import java.security.cert.Certificate
 import java.security.cert.X509Certificate
 
-abstract class ExternalSignaturePdfBase(
+abstract class PdfExternalSignatureBase(
     val externalKeystore: ExternalKeystoreInterface,
     val keyAlias: String, certAliasChain: Array<String>
 ) {

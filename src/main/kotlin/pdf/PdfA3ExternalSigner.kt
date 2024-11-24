@@ -2,7 +2,7 @@ package pdf
 
 import io.pongsakorn.keystore.ExternalKeystoreInterface
 import io.pongsakorn.keystore.PKCSKeyStore
-import sign.ExternalSignaturePdfBase
+import sign.PdfExternalSignatureBase
 import pdf.facade.getMDPPermission
 import pdf.facade.setMDPPermission
 import org.apache.pdfbox.Loader
@@ -15,7 +15,7 @@ import java.io.*
 
 
 class PdfA3Signer(externalKeystore: ExternalKeystoreInterface, keyAlias: String, certAliasChain: Array<String>) :
-    ExternalSignaturePdfBase(externalKeystore, keyAlias, certAliasChain) {
+    PdfExternalSignatureBase(externalKeystore, keyAlias, certAliasChain) {
 
     fun signPdf(document: PDDocument, xmlContent: String, docClose: Boolean = false): ByteArray {
 
