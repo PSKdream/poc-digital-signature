@@ -79,7 +79,7 @@ fun main() {
         PKCSKeyStore.KeystoreConfig(
             keystore = KeyStore.getInstance("PKCS12").apply {
                 load(
-                    FileInputStream("./intermediateca.jks"),
+                    FileInputStream("./intermediateca.p12"),
                     "password".toCharArray()
                 )
             },

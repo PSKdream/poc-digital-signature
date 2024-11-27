@@ -223,7 +223,7 @@ fun main() {
         PKCSKeyStore.KeystoreConfig(
             keystore = KeyStore.getInstance("PKCS12").apply {
                 load(
-                    FileInputStream("./intermediateca.jks"),
+                    FileInputStream("./intermediateca.p12"),
                     "password".toCharArray()
                 )
             },
@@ -236,7 +236,7 @@ fun main() {
     var signer = VisualSigner(
         keystore,
         "intermediateca",
-        arrayOf("intermediateca")
+        arrayOf("intermediateca", "rootca")
     )
     val doc1 = signer.addVisibleSignatureToPdf(
         "signature.jpeg",
@@ -246,8 +246,8 @@ fun main() {
 
     signer = VisualSigner(
         keystore,
-        "intermediateca",
-        arrayOf("intermediateca")
+        "pdf_signer",
+        arrayOf("pdf_signer")
     )
 
     val doc2 = signer.addVisibleSignatureToPdf(
