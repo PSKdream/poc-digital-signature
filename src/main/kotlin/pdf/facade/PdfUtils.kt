@@ -28,13 +28,14 @@ fun getMDPPermission(doc: PDDocument): Int {
 }
 
 fun setMDPPermission(doc: PDDocument, signature: PDSignature, accessPermissions: Int){
-    val sigDict = signature.cosObject
+
     // DocMDP specific stuff
     val transformParameters = COSDictionary().apply {
         setItem(COSName.TYPE, COSName.TRANSFORM_PARAMS)
         setInt(COSName.P, accessPermissions)
         setName(COSName.V, "1.2")
         setNeedToBeUpdated(true)
+        setDirect(true)
     }
 
     val referenceDict = COSDictionary().apply {
@@ -43,23 +44,24 @@ fun setMDPPermission(doc: PDDocument, signature: PDSignature, accessPermissions:
         setItem(COSName.DIGEST_METHOD, COSName.getPDFName("SHA1"))
         setItem(COSName.TRANSFORM_PARAMS, transformParameters)
         setNeedToBeUpdated(true)
+        setDirect(true)
     }
 
 
     val referenceArray =  COSArray().apply {
         add(referenceDict)
         setNeedToBeUpdated(true)
-
+        setDirect(true)
     }
 
+    val sigDict = signature.cosObject
     sigDict.setItem(COSName.REFERENCE, referenceArray)
 
     // Catalog
     val permsDict =  COSDictionary().apply {
-        setItem(COSName.TYPE, COSName.PERMS)
+        setItem(COSName.DOCMDP, signature)
         setNeedToBeUpdated(true)
     }
-
     doc.documentCatalog.cosObject.apply {
         setItem(COSName.PERMS, permsDict)
         setNeedToBeUpdated(true)

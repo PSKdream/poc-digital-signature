@@ -21,6 +21,7 @@ class PdfA3Signer(externalKeystore: ExternalKeystoreInterface, keyAlias: String,
 
         // Check PDF permissions
         val accessPermissions = getMDPPermission(document)
+        println(accessPermissions)
         validatePermissions(accessPermissions)
 
         // Convert document to PDF/A-3 and attach XML metadata
@@ -37,7 +38,8 @@ class PdfA3Signer(externalKeystore: ExternalKeystoreInterface, keyAlias: String,
 
         // Optionally set permissions to restrict future changes
         if (accessPermissions == 0 && docClose)
-            setMDPPermission(document, signature, 2)
+            setMDPPermission(document, signature, 1)
+//            setMDPPermission(document, signature, 2)
 
         // Add the signature to the document
         document.addSignature(signature)
@@ -112,11 +114,11 @@ fun main() {
     """.trimIndent()
 
     // Create and sign document
-    val document = Loader.loadPDF(File("document.pdf"))
+    val document = Loader.loadPDF(File("signed_document_A3_external.pdf"))
 
     val documentWithSigning = signer.signPdf(document, xmlContent, true)
 
-    File("signed_document_A3_external.pdf").outputStream().use {
+    File("signed_document_A3_external2.pdf").outputStream().use {
         it.write(documentWithSigning)
     }
 }
