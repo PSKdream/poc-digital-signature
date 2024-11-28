@@ -114,11 +114,12 @@ fun main() {
     """.trimIndent()
 
     // Create and sign document
-    val document = Loader.loadPDF(File("signed_document_A3_external.pdf"))
+//    val document = Loader.loadPDF(File("document_owner_protect.pdf"))
+    val document = Loader.loadPDF(File("document_user_protect.pdf"), "1234")
 
     val documentWithSigning = signer.signPdf(document, xmlContent, true)
 
-    File("signed_document_A3_external2.pdf").outputStream().use {
+    File("document_user_protect_sign.pdf").outputStream().use {
         it.write(documentWithSigning)
     }
 }
